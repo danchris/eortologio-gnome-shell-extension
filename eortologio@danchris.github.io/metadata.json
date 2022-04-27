@@ -1,0 +1,9 @@
+{
+  "name": "Eortologio Extension",
+  "description": "Simple gnome extension to display the greek namedays",
+  "uuid": "eortologio@danchris.github.io",
+  "shell-version": [
+    "41"
+  ],
+  "version": 1
+}
