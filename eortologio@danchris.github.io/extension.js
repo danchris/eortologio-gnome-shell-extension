@@ -18,55 +18,46 @@
 
 /* exported init */
 
-const GETTEXT_DOMAIN = 'my-indicator-extension';
+const GETTEXT_DOMAIN = 'eortologio-extension';
 
-const { GObject, St } = imports.gi;
+const { GObject, St, Clutter } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Me = ExtensionUtils.getCurrentExtension();
+const helpers = Me.imports.helpers;
 
 
 const _ = ExtensionUtils.gettext;
 
-const Indicator = GObject.registerClass(
-class Indicator extends PanelMenu.Button {
-    _init() {
-        // panelButton = new St.Bin({
-        //     style_class : "panel-button"
-        // });
-        // panelButtonText = new St.Label({
-        //     style_class : "examplePanelText",
-        //     text : "starting..."
-        // });
-        // panelButton.set_child(panelButtonText);
-        super._init(0.0, _('My Shiny Indicator'));
+let eortologioPopup;
 
-        // this.add_child(new St.Icon({
-        //     icon_name: 'face-smile-symbolic',
-        //     style_class: 'system-status-icon',
-        // }));
-        let my_var = "daniel"
-        let label = new St.Label({
-            text: my_var,
-            style_class: 'example-style',
-            y_align: St.TextAlign.CENTER,
-        });
-        log(`Creating new label ${label.get_text()}`);
-        this.add_child(label);
-        // let item = new PopupMenu.PopupMenuItem(_('Show Notification'));
-        // item.connect('activate', () => {
-        //     Main.notify(_('Whatʼs up, folks?'));
-        // });
-        // this.menu.addMenuItem(item);
-        // log('ela re');
-        // let label = new St.Label({text:'Item 1'});
-        // log(`creating label ${label}`);
-        // this.menu.addMenuItem(label);
+const EortologioPopup = GObject.registerClass(
+    class EortologioPopup extends PanelMenu.Button {
+        _init(){
+            super._init(0);
+
+            let label = new St.Label({
+                text: "Eortologio",
+                y_align: Clutter.ActorAlign.CENTER,
+            });
+
+            this.add_child(label);
+
+            let currentNamedays = helpers.getNamesByDay(helpers.getCurrentDate());
+            for (let i = 0; i < currentNamedays.length; i++){
+                this.menu.addMenuItem(new PopupMenu.PopupMenuItem(currentNamedays[i]));
+            }
+
+            if (currentNamedays.length === 0){
+                this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
+            }
+        }
     }
-});
+);
+
 
 class Extension {
     constructor(uuid) {
@@ -77,14 +68,13 @@ class Extension {
 
     enable() {
         log(`enabling ${Me.metadata.name}`);
-        this._indicator = new Indicator();
-        Main.panel.addToStatusArea(this._uuid, this._indicator);
+        eortologioPopup = new EortologioPopup();
+        Main.panel.addToStatusArea(this._uuid, eortologioPopup);
     }
 
     disable() {
         log(`disabling ${Me.metadata.name}`);
-        this._indicator.destroy();
-        this._indicator = null;
+        eortologioPopup.destroy();
     }
 }
 
