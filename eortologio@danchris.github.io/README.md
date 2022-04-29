@@ -3,6 +3,7 @@ Simple gnome extension to display the greek namedays. Shows only the namedays of
 
 
 # How it works
-Alongside with the source code, a json file with most of greek namedays acts as the database. This file called `recurring_namedays.json` and I found it on [Greek-namedays](https://github.com/alexstyl/Greek-namedays) repo, so special thanks to [@alexstyl](https://github.com/alexstyl).
+Alongside with the source code, two json files with most of greek namedays act as the database. These files called `recurring_namedays.json` and `relative_to_easter.json` and I found it on [Greek-namedays](https://github.com/alexstyl/Greek-namedays) repo. Special thanks to [@alexstyl](https://github.com/alexstyl) for his great work.
 
-Currently, eortologio extension does not support namedays depend on Easter.
+Some namedays may missing.
+Feel free to open an issue if you have found a bug or wish to see a feature implemented.    
