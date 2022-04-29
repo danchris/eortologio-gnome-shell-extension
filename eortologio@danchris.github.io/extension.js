@@ -46,7 +46,7 @@ const EortologioPopup = GObject.registerClass(
 
             this.add_child(label);
 
-            let currentNamedays = helpers.getNamesByDay(helpers.getCurrentDate());
+            let currentNamedays = helpers.getNameDays();
             for (let i = 0; i < currentNamedays.length; i++){
                 this.menu.addMenuItem(new PopupMenu.PopupMenuItem(currentNamedays[i]));
             }
