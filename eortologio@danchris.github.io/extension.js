@@ -47,9 +47,11 @@ const EortologioPopup = GObject.registerClass(
             this.add_child(label);
 
             let currentNamedays = helpers.getNameDays();
+            let popupMenuExpander = new PopupMenu.PopupSubMenuMenuItem('Today');
             for (let i = 0; i < currentNamedays.length; i++){
-                this.menu.addMenuItem(new PopupMenu.PopupMenuItem(currentNamedays[i]));
+                popupMenuExpander.menu.addMenuItem(new PopupMenu.PopupMenuItem(currentNamedays[i]));
             }
+            this.menu.addMenuItem(popupMenuExpander);
 
             if (currentNamedays.length === 0){
                 this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
