@@ -1,13 +1,13 @@
 const GLib = imports.gi.GLib;
 
 
-function getNameDays(){
+function getNameDays(currentDatetime){
 
     let nameDays = [];
-    let date = getCurrentDate();
-    let [easterDay, easterMonth, easterYear] = calcOrthEaster(getCurrentYear());
+    let date = getCurrentDate(currentDatetime);
+    let [easterDay, easterMonth, easterYear] = calcOrthEaster(currentDatetime.get_year());
     
-    return nameDays.concat(getRecurringNameDays(date), getRelativeToEasterNameDays(easterDay, easterMonth, easterYear));
+    return nameDays.concat(getRecurringNameDays(date), getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime));
     
     
 }
@@ -32,7 +32,7 @@ function getRecurringNameDays(date){
     return recurringNameDays;
 }
 
-function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear){
+function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime){
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
     let homePath = GLib.get_home_dir();
     let filePath = homePath+'/.local/share/gnome-shell/extensions/eortologio@danchris.github.io/relative_to_easter.json';
@@ -44,26 +44,24 @@ function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear){
         let jsonData = JSON.parse(namedaysFile);
         jsonData.special.forEach(function(element){
             tmpDateTime = easterDateTime.add_days(parseInt(element.toEaster));
-            if (tmpDateTime.get_day_of_month() === getCurrentDay() && tmpDateTime.get_month() === getCurrentMonth() && tmpDateTime.get_year() === getCurrentYear()){
+            if (tmpDateTime.get_day_of_month() === currentDatetime.get_day_of_month() && tmpDateTime.get_month() === currentDatetime.get_month() && tmpDateTime.get_year() === currentDatetime.get_year()){
                 relativeNameDays = relativeNameDays.concat(element.main, element.variations);
             }
         });
         GLib.free(namedaysFile);
     }
 
-    
-    
     return relativeNameDays;
 }
 
 
-function getCurrentDate(){
+function getCurrentDate(currentDatetime){
 
-    let currentDay = getCurrentDay();
+    let currentDay = currentDatetime.get_day_of_month();
     if (currentDay < 10) 
         currentDay ="0".concat(currentDay.toString());
 
-    let currentMonth = getCurrentMonth();
+    let currentMonth = currentDatetime.get_month();
     if (currentMonth < 10 )
         currentMonth = "0".concat(currentMonth.toString());
 
@@ -71,20 +69,6 @@ function getCurrentDate(){
 
     return currentDate;
 }
-
-function getCurrentYear(){
-    let currentDatetime = GLib.DateTime.new_now_local();
-    return currentDatetime.get_year();
-}
-
-function getCurrentMonth(){
-    let currentDatetime = GLib.DateTime.new_now_local();
-    return currentDatetime.get_month();
-}
-
-function getCurrentDay(){
-    let currentDatetime = GLib.DateTime.new_now_local();
-    return currentDatetime.get_day_of_month();}
 
 function calcOrthEaster(year) {
     let a = year % 19;

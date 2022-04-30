@@ -20,7 +20,7 @@
 
 const GETTEXT_DOMAIN = 'eortologio-extension';
 
-const { GObject, St, Clutter } = imports.gi;
+const { GObject, St, Clutter , GLib } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -33,11 +33,14 @@ const helpers = Me.imports.helpers;
 const _ = ExtensionUtils.gettext;
 
 let eortologioPopup;
+let currentDatetime;
 
 const EortologioPopup = GObject.registerClass(
     class EortologioPopup extends PanelMenu.Button {
-        _init(){
+        _init(currentDatetime){
             super._init(0);
+            
+            this.currentDatetime = currentDatetime;
 
             let label = new St.Label({
                 text: "Eortologio",
@@ -46,7 +49,7 @@ const EortologioPopup = GObject.registerClass(
 
             this.add_child(label);
 
-            let currentNamedays = helpers.getNameDays();
+            let currentNamedays = helpers.getNameDays(currentDatetime);
             let popupMenuExpander = new PopupMenu.PopupSubMenuMenuItem('Today');
             for (let i = 0; i < currentNamedays.length; i++){
                 popupMenuExpander.menu.addMenuItem(new PopupMenu.PopupMenuItem(currentNamedays[i]));
@@ -56,6 +59,7 @@ const EortologioPopup = GObject.registerClass(
             if (currentNamedays.length === 0){
                 this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
             }
+            currentDatetime.unref();
         }
     }
 );
@@ -70,12 +74,14 @@ class Extension {
 
     enable() {
         log(`enabling ${Me.metadata.name}`);
-        eortologioPopup = new EortologioPopup();
+        currentDatetime = GLib.DateTime.new_now_local();
+        eortologioPopup = new EortologioPopup(currentDatetime);
         Main.panel.addToStatusArea(this._uuid, eortologioPopup);
     }
 
     disable() {
         log(`disabling ${Me.metadata.name}`);
+        currentDatetime.unref();
         eortologioPopup.destroy();
     }
 }
