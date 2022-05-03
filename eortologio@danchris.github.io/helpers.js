@@ -1,5 +1,5 @@
 const GLib = imports.gi.GLib;
-
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 function getNameDays(currentDatetime){
 
@@ -14,8 +14,8 @@ function getNameDays(currentDatetime){
 
 function getRecurringNameDays(date){
 
-    let homePath = GLib.get_home_dir();
-    let filePath = homePath+'/.local/share/gnome-shell/extensions/eortologio@danchris.github.io/recurring_namedays.json';
+    let filePath = Me.dir.get_child('recurring_namedays.json').get_path();
+   
     let recurringNameDays = [];
     if (filePath){
         let namedaysFile = GLib.file_get_contents(filePath)[1];
@@ -33,9 +33,11 @@ function getRecurringNameDays(date){
 }
 
 function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime){
+    
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
-    let homePath = GLib.get_home_dir();
-    let filePath = homePath+'/.local/share/gnome-shell/extensions/eortologio@danchris.github.io/relative_to_easter.json';
+   
+    let filePath = Me.dir.get_child('relative_to_easter.json').get_path();
+  
     let relativeNameDays = [];
     let tmpDateTime;
 

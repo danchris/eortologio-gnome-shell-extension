@@ -59,7 +59,6 @@ const EortologioPopup = GObject.registerClass(
             if (currentNamedays.length === 0){
                 this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
             }
-            currentDatetime.unref();
         }
     }
 );
@@ -83,6 +82,7 @@ class Extension {
         log(`disabling ${Me.metadata.name}`);
         currentDatetime.unref();
         eortologioPopup.destroy();
+        eortologioPopup = null;
     }
 }
 
