@@ -7,8 +7,7 @@ export function getNameDays(currentDatetime){
     let [easterDay, easterMonth, easterYear] = calcOrthEaster(currentDatetime.get_year());
     
     return nameDays.concat(getRecurringNameDays(date), getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime));
-    
-    
+   
 }
 
 export function getRecurringNameDays(date){
@@ -24,7 +23,6 @@ export function getRecurringNameDays(date){
                 recurringNameDays = recurringNameDays.concat(element.names);
             }
         });
-       GLib.free(namedaysFile);
     }
 
     
@@ -49,7 +47,6 @@ export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, 
                 relativeNameDays = relativeNameDays.concat(element.main, element.variations);
             }
         });
-        GLib.free(namedaysFile);
     }
 
     return relativeNameDays;
