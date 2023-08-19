@@ -76,6 +76,8 @@ export function calcOrthEaster(year) {
     let e = (2 * b + 4 * c +6*d + 6) % 7;
     let f = d + e;
 
+    let day, month;  // Declare day and month variables
+
     if (f <= 9) {
         day = 22 + f;
         month = 3;
