@@ -1,7 +1,6 @@
-const GLib = imports.gi.GLib;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+import GLib from 'gi://GLib';
 
-function getNameDays(currentDatetime){
+export function getNameDays(currentDatetime){
 
     let nameDays = [];
     let date = getCurrentDate(currentDatetime);
@@ -12,7 +11,7 @@ function getNameDays(currentDatetime){
     
 }
 
-function getRecurringNameDays(date){
+export function getRecurringNameDays(date){
 
     let filePath = Me.dir.get_child('recurring_namedays.json').get_path();
    
@@ -32,7 +31,7 @@ function getRecurringNameDays(date){
     return recurringNameDays;
 }
 
-function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime){
+export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime){
     
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
    
@@ -57,7 +56,7 @@ function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, current
 }
 
 
-function getCurrentDate(currentDatetime){
+export function getCurrentDate(currentDatetime){
 
     let currentDay = currentDatetime.get_day_of_month();
     if (currentDay < 10) 
@@ -72,7 +71,7 @@ function getCurrentDate(currentDatetime){
     return currentDate;
 }
 
-function calcOrthEaster(year) {
+export function calcOrthEaster(year) {
     let a = year % 19;
     let b = year % 4;
     let c = year % 7;
