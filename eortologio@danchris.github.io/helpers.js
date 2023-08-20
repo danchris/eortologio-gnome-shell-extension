@@ -1,4 +1,5 @@
 import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 
 export function getNameDays(currentDatetime){
 
@@ -10,10 +11,11 @@ export function getNameDays(currentDatetime){
    
 }
 
-export function getRecurringNameDays(date){
-
-    let filePath = Me.dir.get_child('recurring_namedays.json').get_path();
-   
+export function getRecurringNameDays(date, subdir){
+/*    let filePath = Me.dir.get_child('recurring_namedays.json').get_path(); */
+    let filePath = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell', 'extensions', 'eortologio@danchris.github.io', 'recurring_namedays.json']);
+    const file = Gio.File.new_for_path(filePath);
+ 
     let recurringNameDays = [];
     if (filePath){
         let namedaysFile = GLib.file_get_contents(filePath)[1];
@@ -29,12 +31,14 @@ export function getRecurringNameDays(date){
     return recurringNameDays;
 }
 
-export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime){
+export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime, subdir){
     
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
-   
-    let filePath = Me.dir.get_child('relative_to_easter.json').get_path();
-  
+/*    let filePath = Me.dir.get_child('relative_to_easter.json').get_path(); */
+
+    let filePath = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell', 'extensions', 'eortologio@danchris.github.io', 'relative_to_easter.json']);
+    const file = Gio.File.new_for_path(filePath);
+
     let relativeNameDays = [];
     let tmpDateTime;
 
@@ -90,18 +94,18 @@ export function calcOrthEaster(year) {
     day = day + 13;
 
     if (month == 3) {
-        if (day>31){
+        if (day > 31){
             day = day - 31;
             month = month + 1;
         }
     }
     else {
-        if (day > 30 ) {
+        if (day > 30) {
             day = day - 30;
             month = month + 1;
         }
     }
 
     return [day, month, year];
-
 }
+
