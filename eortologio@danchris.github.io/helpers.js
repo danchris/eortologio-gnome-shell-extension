@@ -13,9 +13,9 @@ export function getNameDays(currentDatetime){
 
 export function getRecurringNameDays(date, subdir){
 /*    let filePath = Me.dir.get_child('recurring_namedays.json').get_path(); */
-    let filePath = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell', 'extensions', 'eortologio@danchris.github.io', 'recurring_namedays.json']);
-    const file = Gio.File.new_for_path(filePath);
- 
+    const file = Gio.File.new_for_uri(import.meta.url).get_parent().get_child('recurring_namedays.json'); 
+    const [, contents] = file.load_contents(null);
+
     let recurringNameDays = [];
     if (filePath){
         let namedaysFile = GLib.file_get_contents(filePath)[1];
@@ -35,9 +35,8 @@ export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, 
     
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
 /*    let filePath = Me.dir.get_child('relative_to_easter.json').get_path(); */
-
-    let filePath = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell', 'extensions', 'eortologio@danchris.github.io', 'relative_to_easter.json']);
-    const file = Gio.File.new_for_path(filePath);
+    const file = Gio.File.new_for_uri(import.meta.url).get_parent().get_child('relative_to_easter.json'); 
+    const [, contents] = file.load_contents(null);
 
     let relativeNameDays = [];
     let tmpDateTime;
