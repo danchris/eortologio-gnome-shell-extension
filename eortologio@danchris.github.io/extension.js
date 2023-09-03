@@ -68,7 +68,7 @@ export default class EortologioPopupExtension extends Extension {
     }
 
     disable() {
-        currentDatetime.unref();
+        currentDateTime = null
         this._eortologioPopup.destroy();
         this._eortologioPopup = null;
     }
