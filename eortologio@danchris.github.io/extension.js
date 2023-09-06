@@ -29,14 +29,14 @@ import * as Helpers from './helpers.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
  let eortologioPopup;
- let currentDatetime;
+ let currentDateTime;
 
 const EortologioPopup = GObject.registerClass(
 class EortologioPopup extends PanelMenu.Button {
     _init(currentDatetime) {
             super._init(0);
 
-            this.currentDatetime = currentDatetime;
+            this.currentDateTime = currentDateTime;
 
             let label = new St.Label({
                 text: "Eortologio",
@@ -45,7 +45,7 @@ class EortologioPopup extends PanelMenu.Button {
 
             this.add_child(label);
 
-            let currentNamedays = Helpers.getNameDays(this.currentDatetime);
+            let currentNamedays = Helpers.getNameDays(this.currentDateTime);
             if (currentNamedays.length === 0){
                 this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
             }
@@ -62,8 +62,8 @@ class EortologioPopup extends PanelMenu.Button {
 
 export default class EortologioPopupExtension extends Extension {
     enable() {
-        currentDatetime = GLib.DateTime.new_now_local();
-        this._eortologioPopup = new EortologioPopup(currentDatetime);
+        currentDateTime = GLib.DateTime.new_now_local();
+        this._eortologioPopup = new EortologioPopup(currentDateTime);
         Main.panel.addToStatusArea(this.uuid, this._eortologioPopup);
     }
 
