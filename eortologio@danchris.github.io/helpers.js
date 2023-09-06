@@ -1,7 +1,7 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 
-export function getNameDays(currentDateTime){
+export function getNameDays(currentDatetime){
 
     let nameDays = [];
     let date = getCurrentDate(currentDatetime);
