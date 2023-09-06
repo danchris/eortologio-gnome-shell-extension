@@ -12,46 +12,48 @@ export function getNameDays(currentDatetime){
 }
 
 export function getRecurringNameDays(date, subdir){
-/*    let filePath = Me.dir.get_child('recurring_namedays.json').get_path(); */
     const file = Gio.File.new_for_uri(import.meta.url).get_parent().get_child('recurring_namedays.json'); 
     const [, contents] = file.load_contents(null);
 
     let recurringNameDays = [];
-    if (filePath){
-        let namedaysFile = GLib.file_get_contents(filePath)[1];
-        let jsonData = JSON.parse(namedaysFile);
-        jsonData.data.forEach(function(element){
-            if (element.date === date) {
-                recurringNameDays = recurringNameDays.concat(element.names);
-            }
-        });
-    }
-
-    
+    if (contents) {
+        const namedaysFile = contents.toString();
+        const jsonData = JSON.parse(namedaysFile);
+    jsonData.data.forEach(function(element) {
+        if (element.date === date) {
+            recurringNameDays = recurringNameDays.concat(element.names);
+        }
+    });
+}
     return recurringNameDays;
 }
 
 export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDatetime, subdir){
     
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
-/*    let filePath = Me.dir.get_child('relative_to_easter.json').get_path(); */
     const file = Gio.File.new_for_uri(import.meta.url).get_parent().get_child('relative_to_easter.json'); 
     const [, contents] = file.load_contents(null);
-
+    
     let relativeNameDays = [];
     let tmpDateTime;
 
-    if (filePath){
-        let namedaysFile = GLib.file_get_contents(filePath)[1];
-        let jsonData = JSON.parse(namedaysFile);
-        jsonData.special.forEach(function(element){
-            tmpDateTime = easterDateTime.add_days(parseInt(element.toEaster));
-            if (tmpDateTime.get_day_of_month() === currentDatetime.get_day_of_month() && tmpDateTime.get_month() === currentDatetime.get_month() && tmpDateTime.get_year() === currentDatetime.get_year()){
-                relativeNameDays = relativeNameDays.concat(element.main, element.variations);
-            }
-        });
-    }
+    if (contents) {
+        const namedaysFile = contents.toString();
+        const jsonData = JSON.parse(namedaysFile);
 
+    // Assuming easterDateTime and currentDatetime are properly defined
+    jsonData.special.forEach(function (element) {
+        tmpDateTime = easterDateTime.add_days(parseInt(element.toEaster));
+
+        if (
+            tmpDateTime.get_day_of_month() === currentDatetime.get_day_of_month() &&
+            tmpDateTime.get_month() === currentDatetime.get_month() &&
+            tmpDateTime.get_year() === currentDatetime.get_year()
+        ) {
+            relativeNameDays = relativeNameDays.concat(element.main, element.variations);
+        }
+    });
+}
     return relativeNameDays;
 }
 
