@@ -33,7 +33,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 const EortologioPopup = GObject.registerClass(
 class EortologioPopup extends PanelMenu.Button {
-    _init(currentDatetime) {
+    _init(currentDateTime) {
             super._init(0);
 
             this.currentDateTime = currentDateTime;
