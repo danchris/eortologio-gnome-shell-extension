@@ -28,7 +28,6 @@ import * as Helpers from './helpers.js';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
- let eortologioPopup;
  let currentDateTime;
 
 const EortologioPopup = GObject.registerClass(
@@ -63,13 +62,13 @@ class EortologioPopup extends PanelMenu.Button {
 export default class EortologioPopupExtension extends Extension {
     enable() {
         currentDateTime = GLib.DateTime.new_now_local();
-        this._eortologioPopup = new EortologioPopup(currentDateTime);
-        Main.panel.addToStatusArea(this.uuid, this._eortologioPopup);
+        this._EortologioPopup = new EortologioPopup(currentDateTime);
+        Main.panel.addToStatusArea(this.uuid, this._EortologioPopup);
     }
 
     disable() {
         currentDateTime = null
-        this._eortologioPopup.destroy();
-        this._eortologioPopup = null;
+        this._EortologioPopup.destroy();
+        this._EortologioPopup = null;
     }
 }
