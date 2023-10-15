@@ -2,7 +2,7 @@
   "name": "Eortologio",
   "description": "Simple gnome extension to display the greek namedays",
   "uuid": "eortologio@danchris.github.io",
-  "shell-version": [ "41", "42", "43", "44"],
+  "shell-version": ["45"],
   "url": "https://github.com/danchris/eortologio-gnome-shell-extension",
-  "version": 5
+  "version": 6
 }

@@ -16,31 +16,26 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-/* exported init */
+import GObject from 'gi://GObject';
+import GLib from 'gi://GLib';
+import St from 'gi://St';
+import Clutter from 'gi://Clutter';
 
-const GETTEXT_DOMAIN = 'eortologio-extension';
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as Helpers from './helpers.js';
 
-const { GObject, St, Clutter , GLib } = imports.gi;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-const Me = ExtensionUtils.getCurrentExtension();
-const helpers = Me.imports.helpers;
-
-
-const _ = ExtensionUtils.gettext;
-
-let eortologioPopup;
-let currentDatetime;
+ let currentDateTime;
 
 const EortologioPopup = GObject.registerClass(
-    class EortologioPopup extends PanelMenu.Button {
-        _init(currentDatetime){
+class EortologioPopup extends PanelMenu.Button {
+    _init(currentDateTime) {
             super._init(0);
-            
-            this.currentDatetime = currentDatetime;
+
+            this.currentDateTime = currentDateTime;
 
             let label = new St.Label({
                 text: "Eortologio",
@@ -49,7 +44,7 @@ const EortologioPopup = GObject.registerClass(
 
             this.add_child(label);
 
-            let currentNamedays = helpers.getNameDays(this.currentDatetime);
+            let currentNamedays = Helpers.getNameDays(this.currentDateTime);
             if (currentNamedays.length === 0){
                 this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
             }
@@ -64,29 +59,16 @@ const EortologioPopup = GObject.registerClass(
     }
 );
 
-
-class Extension {
-    constructor(uuid) {
-        this._uuid = uuid;
-
-        ExtensionUtils.initTranslations(GETTEXT_DOMAIN);
-    }
-
+export default class EortologioPopupExtension extends Extension {
     enable() {
-        log(`enabling ${Me.metadata.name}`);
-        currentDatetime = GLib.DateTime.new_now_local();
-        eortologioPopup = new EortologioPopup(currentDatetime);
-        Main.panel.addToStatusArea(this._uuid, eortologioPopup);
+        currentDateTime = GLib.DateTime.new_now_local();
+        this._EortologioPopup = new EortologioPopup(currentDateTime);
+        Main.panel.addToStatusArea(this.uuid, this._EortologioPopup);
     }
 
     disable() {
-        log(`disabling ${Me.metadata.name}`);
-        currentDatetime.unref();
-        eortologioPopup.destroy();
-        eortologioPopup = null;
+        currentDateTime = null
+        this._EortologioPopup.destroy();
+        this._EortologioPopup = null;
     }
-}
-
-function init(meta) {
-    return new Extension(meta.uuid);
 }
