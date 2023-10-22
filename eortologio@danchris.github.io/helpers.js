@@ -17,14 +17,15 @@ export function getRecurringNameDays(date, subdir){
 
     let recurringNameDays = [];
     if (contents) {
-        const namedaysFile = contents.toString();
+        const decoder = new TextDecoder();
+        const namedaysFile = decoder.decode(contents);
         const jsonData = JSON.parse(namedaysFile);
-    jsonData.data.forEach(function(element) {
-        if (element.date === date) {
-            recurringNameDays = recurringNameDays.concat(element.names);
-        }
-    });
-}
+        jsonData.data.forEach(function(element) {
+            if (element.date === date) {
+                recurringNameDays = recurringNameDays.concat(element.names);
+            }
+        });
+    }
     return recurringNameDays;
 }
 
@@ -38,22 +39,23 @@ export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, 
     let tmpDateTime;
 
     if (contents) {
-        const namedaysFile = contents.toString();
+        const decoder = new TextDecoder();
+        const namedaysFile = decoder.decode(contents);
         const jsonData = JSON.parse(namedaysFile);
 
-    // Assuming easterDateTime and currentDateTime are properly defined
-    jsonData.special.forEach(function (element) {
-        tmpDateTime = easterDateTime.add_days(parseInt(element.toEaster));
+        // Assuming easterDateTime and currentDateTime are properly defined
+        jsonData.special.forEach(function (element) {
+            tmpDateTime = easterDateTime.add_days(parseInt(element.toEaster));
 
-        if (
-            tmpDateTime.get_day_of_month() === currentDateTime.get_day_of_month() &&
-            tmpDateTime.get_month() === currentDateTime.get_month() &&
-            tmpDateTime.get_year() === currentDateTime.get_year()
-        ) {
-            relativeNameDays = relativeNameDays.concat(element.main, element.variations);
-        }
-    });
-}
+            if (
+                tmpDateTime.get_day_of_month() === currentDateTime.get_day_of_month() &&
+                tmpDateTime.get_month() === currentDateTime.get_month() &&
+                tmpDateTime.get_year() === currentDateTime.get_year()
+            ) {
+                relativeNameDays = relativeNameDays.concat(element.main, element.variations);
+            }
+        });
+    }
     return relativeNameDays;
 }
 
@@ -109,4 +111,3 @@ export function calcOrthEaster(year) {
 
     return [day, month, year];
 }
-
