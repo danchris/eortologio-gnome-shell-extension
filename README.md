@@ -18,9 +18,10 @@ Eortologio Extension has two JSON files with most of Greek namedays, that act as
 Feel free to open an issue if you have found a bug or wish to see a feature implemented.
 
 ## Development
+
 Place the project to 
 ```sh
-~/.local/share/gnome-shell/extensions/
+$HOME/.local/share/gnome-shell/extensions/
 ```
 and reload **gnome-shell**
 
@@ -28,3 +29,4 @@ and reload **gnome-shell**
 ```sh
 journalctl -f -o cat /usr/bin/gnome-shell 
 ```
+> **_NOTE:_**  For Wayland desktops use `debug.sh` to run a nested instance of GNOME Shell.
