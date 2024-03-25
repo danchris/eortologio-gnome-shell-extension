@@ -28,47 +28,68 @@ import * as Helpers from './helpers.js';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
- let currentDateTime;
 
 const EortologioPopup = GObject.registerClass(
-class EortologioPopup extends PanelMenu.Button {
-    _init(currentDateTime) {
-            super._init(0);
+  class EortologioPopup extends PanelMenu.Button {
+    _init() {
+      super._init(0);
+      let label = new St.Label({
+        text: "Eortologio",
+        y_align: Clutter.ActorAlign.CENTER,
+      });
 
-            this.currentDateTime = currentDateTime;
+      this.add_child(label);
 
-            let label = new St.Label({
-                text: "Eortologio",
-                y_align: Clutter.ActorAlign.CENTER,
-            });
+      this.dateTime = GLib.DateTime.new_now_local();
+      let currentNamedays = Helpers.getNameDays(this.dateTime);
 
-            this.add_child(label);
+      updateMenu(this.menu, currentNamedays);
+      this._timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
+        60 * 60, () => {
 
-            let currentNamedays = Helpers.getNameDays(this.currentDateTime);
-            if (currentNamedays.length === 0){
-                this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
-            }
-            else {
-                let popupMenuExpander = new PopupMenu.PopupSubMenuMenuItem('Today');
-                for (let i = 0; i < currentNamedays.length; i++){
-                    popupMenuExpander.menu.addMenuItem(new PopupMenu.PopupMenuItem(currentNamedays[i]));
-                }
-                this.menu.addMenuItem(popupMenuExpander);
-            }
-        }
+          let currDateTime = GLib.DateTime.new_now_local();
+          if (this.dateTime.get_day_of_month() != currDateTime.get_day_of_month() ||
+            this.dateTime.get_month() != currDateTime.get_month() ||
+            this.dateTime.get_year() != currDateTime.get_year()
+          ) {
+            this.dateTime = currDateTime;
+            let currentNamedays = Helpers.getNameDays(this.dateTime);
+            updateMenu(this.menu, currentNamedays);
+          }
+          return GLib.SOURCE_CONTINUE;
+        });
+
     }
+  }
 );
 
 export default class EortologioPopupExtension extends Extension {
-    enable() {
-        currentDateTime = GLib.DateTime.new_now_local();
-        this._EortologioPopup = new EortologioPopup(currentDateTime);
-        Main.panel.addToStatusArea(this.uuid, this._EortologioPopup);
-    }
+  enable() {
+    this._EortologioPopup = new EortologioPopup();
+    Main.panel.addToStatusArea(this.uuid, this._EortologioPopup);
+  }
 
-    disable() {
-        currentDateTime = null
-        this._EortologioPopup.destroy();
-        this._EortologioPopup = null;
+  disable() {
+    currentDateTime = null
+    this._EortologioPopup.destroy();
+    this._EortologioPopup = null;
+  }
+}
+
+function updateMenu(menu, names) {
+
+  if (!menu.isEmpty()) {
+    menu.removeAll()
+  }
+
+  if (names.length === 0){
+    menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
+  }
+  else {
+    let popupMenuExpander = new PopupMenu.PopupSubMenuMenuItem('Today');
+    for (let i = 0; i < names.length; i++){
+      popupMenuExpander.menu.addMenuItem(new PopupMenu.PopupMenuItem(names[i]));
     }
+    menu.addMenuItem(popupMenuExpander);
+  }
 }
