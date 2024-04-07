@@ -15,20 +15,20 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
-
+ 
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
-
+ 
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Helpers from './helpers.js';
-
+ 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-
-
+ 
+ 
 const EortologioPopup = GObject.registerClass(
   class EortologioPopup extends PanelMenu.Button {
     _init() {
@@ -37,51 +37,62 @@ const EortologioPopup = GObject.registerClass(
         text: "Eortologio",
         y_align: Clutter.ActorAlign.CENTER,
       });
-
+ 
       this.add_child(label);
-
+      
+      // set the label that describes the button for screenreader users
+      this.set_label_actor(label);
+ 
+      // This is the time at construction, which is the same as the time
+      // when `enable()` is called.
       this.dateTime = GLib.DateTime.new_now_local();
-      let currentNamedays = Helpers.getNameDays(this.dateTime);
-
-      updateMenu(this.menu, currentNamedays);
+      let initialNamedays = Helpers.getNameDays(this.dateTime);
+      updateMenu(this.menu, initialNamedays);
+      
       this._timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
         60 * 60, () => {
-
+ 
+          // This is current time when the callback is invoked we are now inside
           let currDateTime = GLib.DateTime.new_now_local();
           if (this.dateTime.get_day_of_month() != currDateTime.get_day_of_month() ||
             this.dateTime.get_month() != currDateTime.get_month() ||
             this.dateTime.get_year() != currDateTime.get_year()
           ) {
+            // The day has changed, so we update the reference time and menu
             this.dateTime = currDateTime;
             let currentNamedays = Helpers.getNameDays(this.dateTime);
             updateMenu(this.menu, currentNamedays);
           }
           return GLib.SOURCE_CONTINUE;
         });
+        
+      this.connect('destroy', () => {
+        GLib.Source.remove(this._timeoutId);
+        this._timeoutId = null;
+      });
 
     }
   }
 );
-
+ 
 export default class EortologioPopupExtension extends Extension {
   enable() {
     this._EortologioPopup = new EortologioPopup();
     Main.panel.addToStatusArea(this.uuid, this._EortologioPopup);
   }
-
+ 
   disable() {
-    currDateTime = null
     this._EortologioPopup.destroy();
     this._EortologioPopup = null;
   }
 }
-
+ 
 function updateMenu(menu, names) {
-
+ 
   if (!menu.isEmpty()) {
     menu.removeAll()
   }
-
+ 
   if (names.length === 0){
     menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
   }
