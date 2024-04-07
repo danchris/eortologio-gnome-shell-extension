@@ -1,13 +1,13 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 
-export function getNameDays(currentDateTime){
+export function getNameDays(currDateTime){
 
     let nameDays = [];
-    let date = getCurrentDate(currentDateTime);
-    let [easterDay, easterMonth, easterYear] = calcOrthEaster(currentDateTime.get_year());
+    let date = getCurrentDate(currDateTime);
+    let [easterDay, easterMonth, easterYear] = calcOrthEaster(currDateTime.get_year());
     
-    return nameDays.concat(getRecurringNameDays(date), getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDateTime));
+    return nameDays.concat(getRecurringNameDays(date), getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currDateTime));
    
 }
 
@@ -29,7 +29,7 @@ export function getRecurringNameDays(date, subdir){
     return recurringNameDays;
 }
 
-export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currentDateTime, subdir){
+export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, currDateTime, subdir){
     
     let easterDateTime = GLib.DateTime.new(GLib.TimeZone.new_local(),easterYear, easterMonth, easterDay, 0,0,0);
     const file = Gio.File.new_for_uri(import.meta.url).get_parent().get_child('relative_to_easter.json'); 
@@ -43,14 +43,14 @@ export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, 
         const namedaysFile = decoder.decode(contents);
         const jsonData = JSON.parse(namedaysFile);
 
-        // Assuming easterDateTime and currentDateTime are properly defined
+        // Assuming easterDateTime and currDateTime are properly defined
         jsonData.special.forEach(function (element) {
             tmpDateTime = easterDateTime.add_days(parseInt(element.toEaster));
 
             if (
-                tmpDateTime.get_day_of_month() === currentDateTime.get_day_of_month() &&
-                tmpDateTime.get_month() === currentDateTime.get_month() &&
-                tmpDateTime.get_year() === currentDateTime.get_year()
+                tmpDateTime.get_day_of_month() === currDateTime.get_day_of_month() &&
+                tmpDateTime.get_month() === currDateTime.get_month() &&
+                tmpDateTime.get_year() === currDateTime.get_year()
             ) {
                 relativeNameDays = relativeNameDays.concat(element.main, element.variations);
             }
@@ -60,13 +60,13 @@ export function getRelativeToEasterNameDays(easterDay, easterMonth, easterYear, 
 }
 
 
-export function getCurrentDate(currentDateTime){
+export function getCurrentDate(currDateTime){
 
-    let currentDay = currentDateTime.get_day_of_month();
+    let currentDay = currDateTime.get_day_of_month();
     if (currentDay < 10) 
         currentDay ="0".concat(currentDay.toString());
 
-    let currentMonth = currentDateTime.get_month();
+    let currentMonth = currDateTime.get_month();
     if (currentMonth < 10 )
         currentMonth = "0".concat(currentMonth.toString());
 
