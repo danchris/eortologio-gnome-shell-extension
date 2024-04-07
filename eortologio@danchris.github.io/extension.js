@@ -15,7 +15,7 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
- 
+
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
@@ -25,10 +25,10 @@ import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/ex
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Helpers from './helpers.js';
- 
+
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
- 
- 
+
+
 const EortologioPopup = GObject.registerClass(
   class EortologioPopup extends PanelMenu.Button {
     _init() {
@@ -37,9 +37,9 @@ const EortologioPopup = GObject.registerClass(
         text: "Eortologio",
         y_align: Clutter.ActorAlign.CENTER,
       });
- 
+
       this.add_child(label);
-      
+     
       // set the label that describes the button for screenreader users
       this.set_label_actor(label);
  
@@ -74,19 +74,19 @@ const EortologioPopup = GObject.registerClass(
     }
   }
 );
- 
+
 export default class EortologioPopupExtension extends Extension {
   enable() {
     this._EortologioPopup = new EortologioPopup();
     Main.panel.addToStatusArea(this.uuid, this._EortologioPopup);
   }
- 
+
   disable() {
     this._EortologioPopup.destroy();
     this._EortologioPopup = null;
   }
 }
- 
+
 function updateMenu(menu, names) {
  
   if (!menu.isEmpty()) {
