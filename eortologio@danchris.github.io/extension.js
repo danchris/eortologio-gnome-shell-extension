@@ -20,7 +20,7 @@ import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
- 
+
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
@@ -88,11 +88,11 @@ export default class EortologioPopupExtension extends Extension {
 }
 
 function updateMenu(menu, names) {
- 
+
   if (!menu.isEmpty()) {
     menu.removeAll()
   }
- 
+
   if (names.length === 0){
     menu.addMenuItem(new PopupMenu.PopupMenuItem('No Celebrations today...'));
   }
